@@ -1,7 +1,7 @@
 /*tabla de verdad (Valores pulsador y potenciometro) */
 /* existen 5 casos (1° caso AND:color rojo),(2° caso OR:color violeta (rojo+azul)), (3° caso NAND:color amarillo (rojo+verde)),(4° caso NOR: color azul), (5° caso XOR color verde )*/
 /*potenciometro su valor varia entre (0-1023)*/
-int potenciometro =A0;/*pin en cual va conectado el potenciometro*/
+int potenciometro =A0;/*pin en el cual va conectado el potenciometro*/
 int val_pot =0;/*valor inicial del potenciometro */
 
 /*LED RGB (led de anodo comun (rojo azul y verde )*/
