@@ -1,0 +1,114 @@
+/*tabla de verdad (Valores pulsador y potenciometro) */
+/* existen 5 casos (1° caso AND:color rojo),(2° caso OR:color violeta (rojo+azul)), (3° caso NAND:color amarillo (rojo+verde)),(4° caso NOR: color azul), (5° caso XOR color verde )*/
+/*potenciometro su valor varia entre (0-1023)*/
+int potenciometro =A0;/*pin en cual va conectado el potenciometro*/
+int val_pot =0;/*valor inicial del potenciometro */
+
+/*LED RGB (led de anodo comun (rojo azul y verde )*/
+int rojo = 16;  /* D0  nombre del pin en la esp */
+int verde = 12;  /*D6 nombre del pin en la esp */
+int azul = 4;  /*D2 nombre del pin en la esp */
+
+/*pulsadores*/
+int pulsadorA =0; /*D3 nombre del pin en la esp*/
+int pulsadorB =14; /*D5 nombre del pin en la esp*/
+int pulsador_A =0; /*valor incial del pulsadorA( pulsador cerrado manda un 1 al no estar presionado) (lee un 0 o 1 segun corresponda) */ 
+int pulsador_B =0; /*valor inicial del pulsadorB(pulsador cerrado manda un 1 al no estar presionado) (lee un 0 o 1 segun corresponda)*/
+
+
+void setup() {
+ Serial.begin(9600);/*comunicacion entre la placa y el pc*/
+ pinMode(rojo,OUTPUT);/*led rojo(salida)*/
+ pinMode(verde,OUTPUT);/*led verde(salida)*/
+ pinMode(azul,OUTPUT);/*led azul(salida)*/
+ pinMode(pulsadorA,INPUT);/*pulsador A(entrada)*/
+ pinMode(pulsadorB,INPUT);/*pulsador B(entrada)*/
+
+}
+
+void loop() {
+  val_pot = analogRead(potenciometro);/*lee el valor que tiene potenciometro*/
+  pulsador_A = digitalRead(pulsadorA);
+  pulsador_B = digitalRead(pulsadorB);
+
+/*monitor serie: potenciometro /pulsadore A y B */
+Serial.println(pulsador_A);Serial.print("potenciometro - ");
+Serial.print(val_pot);Serial.print(" - pulsadorA- "); 
+Serial.print(pulsador_B);Serial.print(" -pulsadorB-");
+ 
+/*caso 1*/
+ if(val_pot>0 && val_pot<204){/* dirigir a la tabla de la verdad ver si cumole las condiciones para el AND=color rojo*/
+  Serial.println("Compuerta AND");
+  if((pulsador_A == 1) & (pulsador_B == 1)){
+    analogWrite(rojo, 0);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 1023);
+  }
+  else{
+    analogWrite(rojo, 1023);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 1023);
+  }
+ }
+ /*caso 2*/
+if(val_pot>=204 && val_pot<408){/*ver si cumple la condicion para el OR: color violeta(rojo+azul)*/
+ Serial.println(" - Compuerta OR ");
+  if(((pulsador_A == LOW) & (pulsador_B == HIGH)) || ((pulsador_A == HIGH) & (pulsador_B == LOW)) || ((pulsador_A == HIGH) & (pulsador_B == HIGH))){
+    analogWrite(rojo, 0);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 0);
+    
+ }
+  else{
+    analogWrite(rojo, 1023);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 1023);
+  }
+ }
+ /*caso 3*/
+if(val_pot>=408 && val_pot<612){/* ver si cumple la condicion para el NAND:color amarillo (rojo+ verde)*/
+  Serial.println(" - Compuerta NAND ");
+  if(((pulsador_A == LOW) & (pulsador_B == LOW)) || ((pulsador_A == LOW) & (pulsador_B == HIGH)) || ((pulsador_A == HIGH) & (pulsador_B == LOW))){
+    analogWrite(rojo, 0);
+    analogWrite(verde, 0);
+    analogWrite(azul, 1023);
+    
+}
+  else{
+    analogWrite(rojo, 1023);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 1023);
+  }
+}
+/* caso 4*/
+if(val_pot>=612 && val_pot<818){/* ver si cumple la condicion para el NOR:color azul*/
+Serial.println(" - Compuerta NOR ");
+  if((pulsador_A == LOW ) & (pulsador_B == LOW)){
+    analogWrite(rojo, 1023);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 0);
+    
+  }
+  else{
+    analogWrite(rojo, 1023);
+    analogWrite(verde, 1023);
+    analogWrite(azul, 1023);
+  }
+}
+/* caso 5*/
+if(val_pot>=818 && val_pot<=1024){/*didrigir si cumple la condicion para XOR:color:verde*/
+ Serial.println(" Compuerta XOR ");
+ if(((pulsador_A == 0) & (pulsador_B == 1)) || ((pulsador_A ==1) & (pulsador_B ==0))) {
+  analogWrite(rojo, 1023);
+  analogWrite(verde, 0);
+  analogWrite(azul, 1023);
+ 
+ 
+ }
+ else{
+  analogWrite(rojo,1023);
+  analogWrite(verde,1023);
+  analogWrite(azul,1023);
+ }
+}
+}
